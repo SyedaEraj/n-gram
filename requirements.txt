@@ -3,3 +3,4 @@ numpy
 pandas
 pydeck
 streamlit
+nltk==3.6.3
