@@ -1,51 +1,38 @@
-# Copyright (c) Streamlit Inc. (2018-2022) Snowflake Inc. (2022)
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import streamlit as st
-from streamlit.logger import get_logger
+import nltk
+from nltk import ngrams
+from nltk.tokenize import word_tokenize
 
-LOGGER = get_logger(__name__)
+# Specify NLTK data path
+nltk.data.path.append('./nltk_data')
 
+# Download NLTK data
+nltk.download('punkt', download_dir='./nltk_data')
 
-def run():
-    st.set_page_config(
-        page_title="Hello",
-        page_icon="👋",
-    )
+# Function to generate n-grams
+def generate_ngrams(text, n):
+    tokens = word_tokenize(text)
+    n_grams = ngrams(tokens, n)
+    return list(n_grams)
 
-    st.write("# Welcome to Streamlit! 👋")
+# Streamlit UI
+def main():
+    st.title("N-gram Extractor")
 
-    st.sidebar.success("Select a demo above.")
+    # User input
+    text_input = st.text_area("Enter text:", "Type or paste your text here...")
 
-    st.markdown(
-        """
-        Streamlit is an open-source app framework built specifically for
-        Machine Learning and Data Science projects.
-        **👈 Select a demo from the sidebar** to see some examples
-        of what Streamlit can do!
-        ### Want to learn more?
-        - Check out [streamlit.io](https://streamlit.io)
-        - Jump into our [documentation](https://docs.streamlit.io)
-        - Ask a question in our [community
-          forums](https://discuss.streamlit.io)
-        ### See more complex demos
-        - Use a neural net to [analyze the Udacity Self-driving Car Image
-          Dataset](https://github.com/streamlit/demo-self-driving)
-        - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
-    """
-    )
+    # N-gram selection
+    n_value = st.slider("Select N for N-grams", min_value=2, max_value=5, value=2)
 
+    # Generate n-grams on button click
+    if st.button("Generate N-grams"):
+        if text_input:
+            st.subheader(f"{n_value}-grams:")
+            n_grams = generate_ngrams(text_input, n_value)
+            st.write(n_grams)
+        else:
+            st.warning("Please enter some text.")
 
-if __name__ == "__main__":
-    run()
+if _name_ == "_main_":
+    main()
